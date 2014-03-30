@@ -1,0 +1,21 @@
+03/30/2014 15:00:00 EDT
+
+Using Google App Engine SDK for Java 1.8.9
+Java 7 Library
+UrlRewriteFilter - http://tuckey.org/urlrewrite/
+
+-Querying and Updating DataStore: Implemented
+-Memcache for faster reads/less expensive on engines: Implemented
+-Full User Registration w/ proper error messages: Implemented
+-User Login: Implemented
+-User Logout: Implemented
+-User Authentication Cookie: Implemented
+-View All/Single Blog post : Implemented
+-Json/XML export of single post : Implemented
+
+
+Future Release Features:
+-User Login form will inform user whether entered user is already
+registered
+-User Logout button on page
+-Json/XML export of all post on home page
