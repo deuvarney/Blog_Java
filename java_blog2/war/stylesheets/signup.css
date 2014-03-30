@@ -1,0 +1,11 @@
+
+
+label {
+	font-style: italic;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.error {
+	color:red;
+}
