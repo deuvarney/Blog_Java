@@ -8,6 +8,7 @@ import  org.apache.commons.lang3.StringEscapeUtils;
 
 
 
+
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 
@@ -30,8 +31,8 @@ public class CommonService {
 		string = string.replace("&", "&amp;");
 		string = string.replace(">", "&gt;");
 		string = string.replace("<", "&lt;");
-		string = string.replace("'", "&#039;");
-		string = string.replace("\"", "&#034;");
+		//string = string.replace("'", "&#039;");
+		//string = string.replace("\"", "&#034;");
 		
 		return string;
 		
@@ -41,10 +42,24 @@ public class CommonService {
 
 		getValuesFromEntity(result);
 		
-		return String.format("{\"content\":"+ "\"%s\"" + ", "  
+		String returnString = String.format("{\"content\":"+ "\"%s\"" + ", "  
 				+ "\"subject\":" +'"'+ subject + '"' +
-				"}", content2);
+				"}", content2);	
 		
+		return returnString;
+	}
+	
+	public static String returnJson(Iterable<Entity> result){
+		String json ="{\"all_posts\": [";
+		
+		for(Entity e: result){
+			json += returnJson(e) + ",";
+		}
+		if(json.endsWith(",")){
+			json = json.substring(0, json.length()-1);
+		}
+		json += "]}";
+		return json;
 		
 	}
 	

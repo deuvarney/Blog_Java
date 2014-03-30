@@ -32,6 +32,24 @@
     	<to >/blog/singlepost?post=$1</to>    
     
     </rule>
+    
+    <rule>
+    	<note>
+    		Handling users that want to export home page json
+    	</note>
+    	<from>/blog(/)?.json</from>
+    	<to>/blog?export=json</to>
+    
+    </rule>
+    
+    <rule>
+    	<note>
+    		Handling users that want to export home page xml
+    	</note>
+    	<from>/blog(/)?.xml</from>
+    	<to>/blog?export=xml</to>
+    
+    </rule>
 		
 <!-- 	<rule> -->
 <!--     	<note> -->
