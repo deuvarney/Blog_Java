@@ -28,23 +28,32 @@ public class CommonService {
 	 * @return Escaped Html string.
 	 */
 	public static String escapeHTML(String string){
-		string = string.replace("&", "&amp;");
-		string = string.replace(">", "&gt;");
-		string = string.replace("<", "&lt;");
-		//string = string.replace("'", "&#039;");
-		//string = string.replace("\"", "&#034;");
+//		string = string.replace("&", "&amp;");
+//		string = string.replace(">", "&gt;");
+//		string = string.replace("<", "&lt;");
+//		//string = string.replace("'", "&#039;");
+//		//string = string.replace("\"", "&#034;");
+//		
+//		return string;
+		return StringEscapeUtils.escapeHtml4(string);
 		
-		return string;
-		
+	}
+	public static String unescapteHTML(String string){
+		return StringEscapeUtils.unescapeHtml4(string);
 	}
 	
 	public static String returnJson(Entity result){
 
 		getValuesFromEntity(result);
 		
+		//content2 = StringEscapeUtils.escapeJson(content2);
+		//content2 = content2.replaceAll("\"", "\\\"");
+
+		content2 = StringEscapeUtils.unescapeHtml4(content2);
+		
 		String returnString = String.format("{\"content\":"+ "\"%s\"" + ", "  
 				+ "\"subject\":" +'"'+ subject + '"' +
-				"}", content2);	
+				"}", StringEscapeUtils.escapeJson(content2));	
 		
 		return returnString;
 	}

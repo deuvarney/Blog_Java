@@ -109,7 +109,7 @@ public class MyDatastoreService {
 	 */
 	public void add_post(String subject, String content) {
 		Key postKey = KeyFactory.createKey("posts", subject);
-		Text contentText = new Text(content);// .replace("\n", "<br>"));
+		Text contentText = new Text(CommonService.escapeHTML(content));// .replace("\n", "<br>"));
 		Entity newPost = new Entity("posts", postKey);
 		newPost.setProperty("subject", subject);
 		newPost.setProperty("content", contentText);// contentText);
