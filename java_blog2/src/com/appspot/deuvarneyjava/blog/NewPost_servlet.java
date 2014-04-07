@@ -6,16 +6,22 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
+import com.appspot.deuvarneyjava.AdminControlHTTPServlet;
 import com.appspot.deuvarneyjava.services.*;
 
-public class NewPost_servlet extends HttpServlet {
+public class NewPost_servlet extends AdminControlHTTPServlet {
 
 	@Override
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//super.doGet(req, resp);
+		
+		if(new MyDatastoreService().queryRequireLoginNewPost()){		
+			System.out.println("New Post Requires Login");
+			super.doGet(req, resp);
+		}
+		
 		RequestDispatcher dispatcher = req.getRequestDispatcher("/blog/newpost_page");
 		
 		req.setAttribute("subject", "");

@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.appspot.deuvarneyjava.services.LoginService;
 
 public class AdminControlHTTPServlet extends HttpServlet {
-
+	protected String test;
+	
 	public AdminControlHTTPServlet() {
 		// TODO Auto-generated constructor stub
 	}
@@ -31,20 +32,18 @@ public class AdminControlHTTPServlet extends HttpServlet {
 			}
 		}
 		System.out.println("3");
-		
+
 		if (userCookie != null) {
 			userName = new LoginService().authenticateUserCookie(userCookie
 					.getValue());
 		}
 		System.out.println("4");
 		if (userCookie != null && userName != null) {
-			
+
+		} else {
+			resp.sendRedirect("/login");
 		}
-		else{
-			resp.sendRedirect("/signup");
-		}
-	
-	
+
 	} 
 
 }

@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.FetchOptions.Builder.*;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -109,7 +110,8 @@ public class MyDatastoreService {
 	 */
 	public void add_post(String subject, String content) {
 		Key postKey = KeyFactory.createKey("posts", subject);
-		Text contentText = new Text(CommonService.escapeHTML(content));// .replace("\n", "<br>"));
+		Text contentText = new Text(CommonService.escapeHTML(content));// .replace("\n",
+																		// "<br>"));
 		Entity newPost = new Entity("posts", postKey);
 		newPost.setProperty("subject", subject);
 		newPost.setProperty("content", contentText);// contentText);
@@ -389,5 +391,58 @@ public class MyDatastoreService {
 			return (String) results.getProperty("userCookie");
 		}
 		return null;
+	}
+
+	public boolean addRequireLoginNewPost() {
+		boolean access = true;
+		String requireLoginAddPost = "requireLoginAddPost";
+		Key accessControlKey = KeyFactory.createKey("accessControl",
+				requireLoginAddPost);
+		// Query q = new Query("accessControl").addFilter(propertyName,
+		// operator, value)
+		Entity e = new Entity(accessControlKey);
+		e.setProperty("accessType", requireLoginAddPost);
+		e.setProperty("access", access);
+		datastore.put(e);
+		return access;
+	}
+
+	public boolean queryRequireLoginNewPost() {
+		Query q = new Query("accessControl").addFilter("accessType",
+				FilterOperator.EQUAL, "requireLoginAddPost");
+		PreparedQuery pq = datastore.prepare(q);
+		
+		//Object accessResult = mc.readFromCacheRequireLoginNewPost();
+		
+		if (mc.readFromCacheRequireLoginNewPost() != null) {
+			System.out.println("Login Cache Read, skipping db: " + mc.readFromCacheRequireLoginNewPost());
+			return (boolean) mc.readFromCacheRequireLoginNewPost();
+		} else {
+			try {
+				Entity result = pq.asSingleEntity();
+				boolean accessResult = (boolean) result.getProperty("access");
+				mc.writeToCacheRequireLoginNewPost(accessResult);
+				return accessResult;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return addRequireLoginNewPost();
+			}
+		}
+
+	}
+
+	public void updateRequireLoginNewPost(boolean access) {
+		// boolean access = true;
+		String requireLoginAddPost = "requireLoginAddPost";
+		Key accessControlKey = KeyFactory.createKey("accessControl",
+				requireLoginAddPost);
+		// Query q = new Query("accessControl").addFilter(propertyName,
+		// operator, value)
+		Entity e = new Entity(accessControlKey);
+		e.setProperty("accessType", requireLoginAddPost);
+		e.setProperty("access", access);
+		mc.writeToCacheRequireLoginNewPost(access);
+		datastore.put(e);
 	}
 }
