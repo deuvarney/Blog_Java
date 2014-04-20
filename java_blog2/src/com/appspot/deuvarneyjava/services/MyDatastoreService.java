@@ -84,6 +84,7 @@ public class MyDatastoreService {
 		passwordHash = SecurityHandlingService.generatePasswordHash(password);
 
 		if (passwordHash != null) {
+			Key userKey = KeyFactory.createKey("userData", userName);
 			Entity userData = new Entity("userData");// , username);
 			userData.setProperty("username", userName);
 			userData.setProperty("passwordHash", passwordHash.getPasswordHash());
@@ -93,6 +94,7 @@ public class MyDatastoreService {
 			userData.setProperty("createdDateTime", new Date());
 			userData.setProperty("userCookie",
 					SecurityHandlingService.generateUserCookieHash(userName));
+			userData.setProperty("admin", false);
 
 			mc.writeToCacheUser(userName, userData);// Recently Implemented
 			datastore.put(userData);
@@ -114,7 +116,7 @@ public class MyDatastoreService {
 																		// "<br>"));
 		Entity newPost = new Entity("posts", postKey);
 		newPost.setProperty("subject", subject);
-		newPost.setProperty("content", contentText);// contentText);
+		newPost.setProperty("content", contentText);
 
 		String insertID = getNextAvailableInsertId();
 		newPost.setProperty("insert_id", insertID);
@@ -239,16 +241,7 @@ public class MyDatastoreService {
 					"insert_id", SortDirection.DESCENDING);
 			PreparedQuery pq = datastore.prepare(q);
 
-			// ## Original method for getting the latest insert id
-			// Iterable<Entity> e = pq.asIterable();
-			// int currentId;
-			// for (Entity f : e) {
-			// currentId = Integer.parseInt((String)
-			// (f.getProperty("insert_id")));
-			// System.out.println("The current number is " + currentId);
-			// return Integer.toString(currentId);
-			// }
-			// return null;
+
 			int currentId = 0;
 			if (pq.countEntities() >= 1) {
 
@@ -327,9 +320,20 @@ public class MyDatastoreService {
 			// info.setRandomizedPassword("passwordRandomValues");
 			info.setRandomizedPassword((String) results
 					.getProperty("passwordRandomValues"));
-
+			
+			info.setEmail((String) results.getProperty("emailAddress"));
+			info.setCreatedDate((Date) results.getProperty("createdDateTime")); 
+			
+			if(results.getProperty("admin") == null){
+				info.setAdmin(false);
+			}
+			else{
+				info.setAdmin((boolean) results.getProperty("admin"));
+			}
 			// hash.put("userPassword", password);
 			info.setPassword(password);
+			
+			
 
 			info.setUserCookie((String) results.getProperty("userCookie"));
 
@@ -339,6 +343,21 @@ public class MyDatastoreService {
 			}
 		}
 		return null;
+
+	}
+
+	public boolean updateAdminUserInfo(boolean bool, String userName) {
+		Query q = new Query("userData").addFilter("username",
+				FilterOperator.EQUAL, userName);
+		PreparedQuery pq = datastore.prepare(q);
+		Entity e = pq.asSingleEntity();
+		if (e != null) {
+			e.setProperty("admin", ((bool) ? true:false));
+			mc.writeToCacheUser(userName, e);// Recently Implemented
+			datastore.put(e);
+			return true;
+		}
+		return false;
 
 	}
 
@@ -443,6 +462,85 @@ public class MyDatastoreService {
 		e.setProperty("accessType", requireLoginAddPost);
 		e.setProperty("access", access);
 		mc.writeToCacheRequireLoginNewPost(access);
+		datastore.put(e);
+	}
+
+	private UserInfo convertEntityToUserInfo(Entity entity){
+		UserInfo userInfo = new UserInfo();
+
+		userInfo.setUserName((String) entity.getProperty("username"));
+		userInfo.setPasswordHash((String) entity.getProperty("passwordHash"));
+		userInfo.setRandomizedPassword((String) entity.getProperty("passwordRandomValues"));
+		userInfo.setEmail((String) entity.getProperty("emailAddress"));
+		userInfo.setCreatedDate((Date) entity.getProperty("createdDateTime"));
+		userInfo.setUserCookie((String) entity.getProperty("userCookie"));
+		userInfo.setAdmin((boolean) entity.getProperty("admin"));
+		
+		return userInfo;
+		
+	}
+
+	public UserInfo queryUser(String userName){//Currently Query User by Username
+		System.out.println("Query User Test 1");
+		Query q = new Query("userData").addFilter("username",
+				FilterOperator.EQUAL, userName);
+		System.out.println("Query User Test 2");
+		Entity entity = datastore.prepare(q).asSingleEntity();
+		System.out.println("Query User Test 3");
+		System.out.print("Inside of Query User- entity is " + entity.toString());
+		return convertEntityToUserInfo(entity);
+	}
+
+	public boolean addRequireAdminRights() {
+		boolean access = false;
+		String requireAdminRights = "requireAdminRights";
+		Key accessControlKey = KeyFactory.createKey("accessControl",
+				requireAdminRights);
+		// Query q = new Query("accessControl").addFilter(propertyName,
+		// operator, value)
+		Entity e = new Entity(accessControlKey);
+		e.setProperty("accessType", requireAdminRights);
+		e.setProperty("access", access);
+		datastore.put(e);
+		return access;
+	}
+
+	public boolean queryRequireAdminRights() {
+		Query q = new Query("accessControl").addFilter("accessType",
+				FilterOperator.EQUAL, "requireAdminRights");
+		PreparedQuery pq = datastore.prepare(q);
+		
+		//Object accessResult = mc.readFromCacheRequireLoginNewPost();
+		
+		if (mc.readFromCacheRequireAdminRights() != null) {
+			System.out.println("Require Admin Cache Read, skipping db: " + mc.readFromCacheRequireAdminRights());
+			return (boolean) mc.readFromCacheRequireAdminRights();
+		} else {
+			try {
+				Entity result = pq.asSingleEntity();
+				boolean accessResult = (boolean) result.getProperty("access");
+				mc.writeToCacheRequireAdminRights(accessResult);
+				return accessResult;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return addRequireAdminRights();
+			}
+		}
+
+	}
+
+	public void updateRequireAdminRights(boolean access) {
+		// boolean access = true;
+		String requireAdminRights = "requireAdminRights";
+		Key accessControlKey = KeyFactory.createKey("accessControl",
+				requireAdminRights);
+		// Query q = new Query("accessControl").addFilter(propertyName,
+		// operator, value)
+		Entity e = new Entity(accessControlKey);
+		e.setProperty("accessType", requireAdminRights);
+		e.setProperty("access", access);
+		mc.writeToCacheRequireAdminRights(access);
 		datastore.put(e);
 	}
 }

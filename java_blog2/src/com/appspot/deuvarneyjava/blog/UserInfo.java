@@ -1,9 +1,13 @@
 package com.appspot.deuvarneyjava.blog;
 
+import java.util.Date;
+
 public class UserInfo {
 	private String userName, password, verifyPassword, email;
 	private String passwordHash, randomizedPassword, userCookie;
-
+	private boolean admin;
+	private Date createdDate;
+	
 	public String getPasswordHash() {
 		return passwordHash;
 	}
@@ -58,6 +62,22 @@ public class UserInfo {
 
 	public void setUserCookie(String userCookie) {
 		this.userCookie = userCookie;
+	}
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 	
 	

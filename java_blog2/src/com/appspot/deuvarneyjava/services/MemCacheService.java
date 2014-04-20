@@ -88,5 +88,14 @@ public class MemCacheService {
 
 		return cache.get("adminRequireLoginNewPost");
 	}
+	
+	public void writeToCacheRequireAdminRights(boolean access) {
+		cache.put("adminRequireAdminRights", access);
+	}
+
+	public Object readFromCacheRequireAdminRights() {
+
+		return cache.get("adminRequireAdminRights");
+	}
 
 }
