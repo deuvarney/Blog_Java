@@ -1,3 +1,7 @@
+04/21/2014 23:44:00 EDT
+
+Master branch with latest code is pushed to production. You will be able to access the frontend @ deuvarneyjava.appspot.com
+
 04/21/2014 23:06:00 EDT
 
 Merged adminAccessControlBranch to Master Branch
