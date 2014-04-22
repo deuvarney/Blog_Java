@@ -1,3 +1,15 @@
+04/21/2014 23:06:00 EDT
+
+Merged adminAccessControlBranch to Master Branch
+
+New Features:
+-Administrator access control page where admins can modify user access to various parts of the site: Implemented
+-Added option to access page where admins can control whether a user needs to be logged in when creating a new post : Implemented
+-Added option to access page where admins can control whether a user needs to be an admin or a regular logged in user to access the access page: Implemented
+-Added option to access page where admins can give a user admin priviledges: Implemented
+Logged in users can access this page by navigating to /admin
+
+
 03/30/2014 15:00:00 EDT
 
 Using Google App Engine SDK for Java 1.8.9
