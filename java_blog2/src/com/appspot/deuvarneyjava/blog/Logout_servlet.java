@@ -16,6 +16,10 @@ public class Logout_servlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		//super.doGet(req, resp);
 		resp.addCookie(new Cookie("userCookie", ""));
+		
+		resp.setContentType("text/plain");
+		resp.getWriter().println("You are now logged out!");
+		resp.sendRedirect("/welcomeLogout");
 	}
 
 }

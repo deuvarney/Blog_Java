@@ -95,6 +95,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 		<servlet-name>Welcome_jsp</servlet-name>
 		<url-pattern>/welcome</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>welcomeLogout</servlet-name>
+		<jsp-file>/webpages/welcome_logout.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>welcomeLogout</servlet-name>
+		<url-pattern>/welcomeLogout</url-pattern>
+	</servlet-mapping>
 
 
 

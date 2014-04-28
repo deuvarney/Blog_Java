@@ -14,13 +14,17 @@ import com.appspot.deuvarneyjava.services.*;
 @SuppressWarnings("serial")
 public class Login_servlet extends HttpServlet {
 	
+	private String fromUrl;
+	
 	@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 				throws ServletException, IOException {
 			// TODO Auto-generated method stub
 		
 			req.getRequestDispatcher("/login_page").forward(req, resp);
 			//super.doGet(req, resp);
+			System.out.println("Parameter Names " + req.getParameter("from"));
+			fromUrl = req.getParameter("from");
 		}
 
 	@Override
@@ -40,7 +44,14 @@ public class Login_servlet extends HttpServlet {
 			resp.addCookie(new Cookie("userCookie", userInfo.getUserCookie()));
 			//RequestDispatcher dispatcher = req.getRequestDispatcher("/welcome");
 			//dispatcher.forward(req, resp);
-			resp.sendRedirect("/welcome");
+			
+			if(fromUrl != null){
+				System.out.println("Variable" + fromUrl);
+				resp.sendRedirect(fromUrl);
+			}
+			else{
+				resp.sendRedirect("/welcome");
+			}
 		}
 		else{
 			resp.setContentType("text/plain");

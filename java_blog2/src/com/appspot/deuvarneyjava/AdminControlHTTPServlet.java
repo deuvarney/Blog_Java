@@ -45,13 +45,17 @@ public class AdminControlHTTPServlet extends HttpServlet {
 					//Do nothing-Allows user to continue
 				}
 				else{
-					resp.sendRedirect("/login");
+					System.out.println("The requested urI is ".toUpperCase() + req.getRequestURI());
+					resp.sendRedirect("/login" + "?from=" + req.getRequestURI());
+					
 					return;
 				}
 			}
 		//Do nothing-Allows user to continue
 		} else {
-			resp.sendRedirect("/login");
+			System.out.println("The requested urI is ".toUpperCase() + req.getRequestURI());
+			//resp.sendRedirect("/login");
+			resp.sendRedirect("/login" + "?from=" + req.getRequestURI());
 			return;
 		}
 
